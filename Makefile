@@ -4,9 +4,12 @@ CC = gcc
 CFLAGS = -Wall -Wextra -Werror
 
 SRCPATH = src/
-SRC = main.c \
+SRC = main.c
 
 OBJ = $(SRC:.c=.o)
+
+LIBFT = -L libft -lft
+
 
 all : $(NAME)
 

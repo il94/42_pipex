@@ -6,7 +6,7 @@
 /*   By: ilandols <ilyes@student.42.fr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/02 17:53:10 by ilandols          #+#    #+#             */
-/*   Updated: 2022/09/07 20:04:12 by ilandols         ###   ########.fr       */
+/*   Updated: 2022/09/08 17:52:12 by ilandols         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 # include "libft/libft.h"
 # include <unistd.h>
 # include <stdio.h>
+# include <fcntl.h>
 
 /* parsing.c */
 int	is_valid_input(int ac, char **av);
