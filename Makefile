@@ -4,7 +4,8 @@ CC = gcc
 CFLAGS = -Wall -Wextra -Werror
 
 SRCPATH = src/
-SRC = main.c
+SRC = main.c \
+		parsing.c
 
 OBJ = $(SRC:.c=.o)
 
