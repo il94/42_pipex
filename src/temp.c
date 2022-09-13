@@ -6,7 +6,7 @@
 /*   By: ilandols <ilyes@student.42.fr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/13 19:40:04 by ilandols          #+#    #+#             */
-/*   Updated: 2022/09/13 19:47:25 by ilandols         ###   ########.fr       */
+/*   Updated: 2022/09/13 20:17:51 by ilandols         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,8 @@ void	print_struct(t_cmd *commands, int size)
 	i = 0;
 	while (i < size)
 	{
-		printf ("[%d] cmd = %s | arg = %s\n", i, commands[i].cmd, commands[i].arg);
+		printf ("[%d] cmd = %s | arg = %s\n", i,
+			commands[i].cmd, commands[i].arg);
 		i++;
 	}
 }

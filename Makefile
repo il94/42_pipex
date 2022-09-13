@@ -6,6 +6,7 @@ CFLAGS = -Wall -Wextra -Werror
 SRCPATH = src/
 SRC = main.c \
 		parsing.c \
+		utils.c \
 		temp.c
 
 OBJ = $(SRC:.c=.o)

@@ -6,13 +6,13 @@
 /*   By: ilandols <ilyes@student.42.fr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/07 19:11:29 by ilandols          #+#    #+#             */
-/*   Updated: 2022/09/13 20:09:58 by ilandols         ###   ########.fr       */
+/*   Updated: 2022/09/13 20:31:22 by ilandols         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../pipex.h"
 
-char *get_command_path(char *cmd, char **bin_paths)
+char	*get_command_path(char *cmd, char **bin_paths)
 {
 	char	*command_path;
 	int		i;
@@ -66,7 +66,7 @@ char	**get_bin_paths(char **envp)
 	return (bin_paths);
 }
 
-void	get_all_paths(t_cmd *commands, int commands_count, char **av, char **envp)
+void	get_all_paths(t_cmd *commands, int cmd_count, char **av, char **envp)
 {
 	char	**bin_paths;
 	int		i;
@@ -74,17 +74,17 @@ void	get_all_paths(t_cmd *commands, int commands_count, char **av, char **envp)
 	bin_paths = get_bin_paths(envp);
 	if (!bin_paths)
 	{
-		free_commands_struct(commands, commands_count);
+		free_commands_struct(commands, cmd_count);
 		exit (1);
 	}
 	i = 0;
-	while (i < commands_count)
+	while (i < cmd_count)
 	{
 		commands[i].cmd = get_command_path(commands[i].cmd, bin_paths);
 		if (!commands[i].cmd)
 		{
 			ft_free_array(bin_paths);
-			free_commands_struct(commands, commands_count);
+			free_commands_struct(commands, cmd_count);
 			exit (1);
 		}
 		i++;
