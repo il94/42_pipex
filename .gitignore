@@ -1,3 +1,5 @@
 *.o
 .vscode
 pipex
+infile
+outfile

@@ -6,51 +6,75 @@
 /*   By: ilandols <ilyes@student.42.fr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/02 17:52:29 by ilandols          #+#    #+#             */
-/*   Updated: 2022/09/12 19:23:03 by ilandols         ###   ########.fr       */
+/*   Updated: 2022/09/13 20:09:32 by ilandols         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../pipex.h"
 
-char	*get_command_path(char *cmd, char **bin_paths)
+void	free_commands_struct(t_cmd *commands, int commands_count)
 {
-	char	*command_path;
-	int		i;
+	int	i;
 
 	i = 0;
-	command_path = ft_pathjoin(bin_paths[i], cmd);
-	if (!command_path)
-		ft_print_exit("Malloc failed\n");
-	while (bin_paths[i] && access(command_path, X_OK) < 0)
+	while (i < commands_count)
 	{
-		free(command_path);
+		if (commands[i].cmd)
+			free(commands[i].cmd);
+		if (commands[i].arg)
+			free(commands[i].arg);
 		i++;
-		if (!bin_paths[i])
-			ft_print_exit("Path not found\n");
-		command_path = ft_pathjoin(bin_paths[i], cmd);
-		if (!command_path)
-			ft_print_exit("Malloc failed\n");
 	}
-	printf("command_path = %s\n", command_path);
-	return (command_path);
+	free(commands);
+}
+
+t_cmd	*initialize_commands_struct(int *commands_count, int ac, char **av, char **envp)
+{
+	t_cmd	*commands;
+	int	i;
+
+	*commands_count = ac - 3;
+	commands = malloc(*commands_count * sizeof(t_cmd));
+	if (!commands)
+		ft_print_exit("Malloc failed\n");
+	i = 0;
+	while (i < *commands_count)
+	{
+		if (ft_strchr(av[i + 2], ' '))
+		{
+			commands[i].cmd = ft_strcut_left(av[i + 2], ' ');
+			commands[i].arg = ft_strcut_right(av[i + 2], ' ');
+			if (!commands[i].cmd || !commands[i].arg)
+				free_commands_struct(commands, *commands_count);
+		}
+		else
+		{
+			commands[i].cmd = ft_strdup(av[i + 2]);
+			commands[i].arg = NULL;
+			if (!commands[i].cmd)
+				free_commands_struct(commands, *commands_count);
+		}
+		i++;
+	}
+	return (commands);
 }
 
 int	main(int ac, char **av, char **envp)
 {
-	// if (ft_strcmp(av[1], "here_doc"))
-	char	**bin_paths;
+	t_cmd	*commands;
+	int		commands_count;
 	char	*cmd1;
 	char	*cmd2;
 
-	// if (ac < 5)
-	// 	ft_print_exit("Invalid input\n");
-	bin_paths = get_bin_paths(envp);
-	cmd1 = get_command_path(av[2], bin_paths);
-	cmd2 = get_command_path(av[3], bin_paths);
-	// ft_print_array(bin_paths);
-	ft_free_array(bin_paths);
-	free(cmd1);
-	free(cmd2);
-	// execve("/usr/bin/ls", av, envp);
+	// ft_print_array(envp);
+	if (ac < 5)
+		ft_print_exit("Not enough arguments\n");
+	if (!envp[0])
+		ft_print_exit("Env is not registred\n");
+	commands = initialize_commands_struct(&commands_count, ac, av, envp);
+	get_all_paths(commands, commands_count, av, envp);
+	print_struct(commands, commands_count);
+	free_commands_struct(commands, commands_count);
+	// execve(cmd1, av, envp);
 	return (0);
 }
