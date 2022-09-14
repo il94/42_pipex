@@ -6,7 +6,7 @@
 /*   By: ilandols <ilyes@student.42.fr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/02 17:52:29 by ilandols          #+#    #+#             */
-/*   Updated: 2022/09/13 20:31:22 by ilandols         ###   ########.fr       */
+/*   Updated: 2022/09/14 18:07:11 by ilandols         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,8 @@
 
 int	main(int ac, char **av, char **envp)
 {
-	t_cmd	*commands;
+	t_path	*commands;
 	int		cmd_count;
-	char	*cmd1;
-	char	*cmd2;
 
 	if (ac < 5)
 		ft_print_exit("Not enough arguments\n");
@@ -26,7 +24,7 @@ int	main(int ac, char **av, char **envp)
 	cmd_count = ac - 3;
 	commands = initialize_commands_struct(cmd_count, av, envp);
 	get_all_paths(commands, cmd_count, av, envp);
-	print_struct(commands, cmd_count);
-	free_commands_struct(commands, cmd_count);
+	pipex(commands, cmd_count, av, envp);
+	free_struct(commands, cmd_count);
 	return (0);
 }

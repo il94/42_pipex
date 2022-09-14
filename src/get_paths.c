@@ -6,13 +6,13 @@
 /*   By: ilandols <ilyes@student.42.fr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/07 19:11:29 by ilandols          #+#    #+#             */
-/*   Updated: 2022/09/13 20:31:22 by ilandols         ###   ########.fr       */
+/*   Updated: 2022/09/14 14:51:37 by ilandols         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../pipex.h"
 
-char	*get_command_path(char *cmd, char **bin_paths)
+char	*get_command_path(char *path, char **bin_paths)
 {
 	char	*command_path;
 	int		i;
@@ -20,21 +20,22 @@ char	*get_command_path(char *cmd, char **bin_paths)
 	i = 0;
 	while (bin_paths[i])
 	{
-		command_path = ft_pathjoin(bin_paths[i], cmd);
+		command_path = ft_pathjoin(bin_paths[i], path);
 		if (!command_path)
 		{
+			free(path);
 			ft_printf("Malloc failed\n");
 			return (NULL);
 		}
 		if (access(command_path, X_OK) >= 0)
 		{
-			free(cmd);
+			free(path);
 			return (command_path);
 		}
 		free(command_path);
 		i++;
 	}
-	free(cmd);
+	free(path);
 	ft_printf("Command not found\n");
 	return (NULL);
 }
@@ -66,26 +67,23 @@ char	**get_bin_paths(char **envp)
 	return (bin_paths);
 }
 
-void	get_all_paths(t_cmd *commands, int cmd_count, char **av, char **envp)
+void	get_all_paths(t_path *commands, int cmd_count, char **av, char **envp)
 {
 	char	**bin_paths;
 	int		i;
 
 	bin_paths = get_bin_paths(envp);
 	if (!bin_paths)
-	{
-		free_commands_struct(commands, cmd_count);
-		exit (1);
-	}
+		free_struct_and_exit(commands, cmd_count, NULL);
 	i = 0;
 	while (i < cmd_count)
 	{
-		commands[i].cmd = get_command_path(commands[i].cmd, bin_paths);
-		if (!commands[i].cmd)
+		if (access(commands[i].path, X_OK) < 0)
+			commands[i].path = get_command_path(commands[i].path, bin_paths);
+		if (!commands[i].path)
 		{
 			ft_free_array(bin_paths);
-			free_commands_struct(commands, cmd_count);
-			exit (1);
+			free_struct_and_exit(commands, cmd_count, NULL);
 		}
 		i++;
 	}
