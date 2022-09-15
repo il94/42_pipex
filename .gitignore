@@ -1,5 +1,6 @@
 *.o
 .vscode
 pipex
+libft/.git
 infile
 outfile
