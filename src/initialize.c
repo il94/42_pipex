@@ -1,49 +1,59 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   run.c                                              :+:      :+:    :+:   */
+/*   initialize.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ilandols <ilyes@student.42.fr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/13 20:15:57 by ilandols          #+#    #+#             */
-/*   Updated: 2022/09/15 15:05:47 by ilandols         ###   ########.fr       */
+/*   Updated: 2022/09/16 19:36:28 by ilandols         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../pipex.h"
 
-void	free_struct_and_exit(t_path *commands, int cmd_count, char *str_error)
+int	*initalize_pipes(int cmd_count)
 {
-	free_struct(commands, cmd_count);
-	if (str_error)
-		ft_print_exit(str_error);
-	exit (1);
+	int	*pipes;
+	int	i;
+
+	pipes = malloc(cmd_count * 2 * sizeof(int));
+	if (!pipes)
+	{
+		ft_printf("Malloc failed\n");
+		return (NULL);
+	}
+	i = 0;
+	while (i < cmd_count && pipe(&pipes[i * 2]) == 0)
+		i++;
+	if (i < cmd_count)
+	{
+		ft_printf("Failed opening file\n");
+		free_pipes(pipes, i);
+		return (NULL);
+	}
+	return (pipes);
 }
 
-void	free_struct(t_path *commands, int cmd_count)
+int	initialize_fd(char **av, int *files, int **pipes, int cmd_count)
 {
-	int	i;
-	int	j;
-
-	i = 0;
-	while (i < cmd_count)
+	*pipes = NULL;
+	files[0] = open(av[1], O_RDONLY);
+	files[1] = open(av[cmd_count + 2], O_WRONLY | O_CREAT);
+	if (files[0] == -1 || files[1] == -1)
 	{
-		if (commands[i].args)
-		{
-			j = 0;
-			while (commands[i].args[j])
-			{
-				if (commands[i].args[j])
-					free(commands[i].args[j]);
-				j++;
-			}
-			free(commands[i].args);
-		}
-		if (commands[i].path)
-			free(commands[i].path);
-		i++;
+		ft_printf("Failed opening file\n");
+		free_fd(files);
+		return (0);
 	}
-	free(commands);
+	*pipes = initalize_pipes(cmd_count);
+	if (!*pipes)
+	{
+		ft_printf("Failed opening file\n");
+		free_fd(files);
+		return (0);
+	}
+	return (1);
 }
 
 void	initialize_command_with_args(t_path *commands, int i, char **av)
@@ -55,10 +65,10 @@ void	initialize_command_with_args(t_path *commands, int i, char **av)
 		free_struct_and_exit(commands, i, "Malloc failed\n");
 	commands[i].path = ft_strcut_left(av[i + 2], ' ');
 	commands[i].args = ft_split(args_list, ' ');
-	if (!commands[i].path && !commands[i].args)
+	if (!commands[i].path || !commands[i].args)
 	{
 		free(args_list);
-		free_struct_and_exit(commands, i, "Malloc failed\n");
+		free_struct_and_exit(commands, i + 1, "Malloc failed\n");
 	}
 	free(args_list);
 }
@@ -68,7 +78,7 @@ void	initialize_command_without_args(t_path *commands, int i, char **av)
 	commands[i].path = ft_strdup(av[i + 2]);
 	commands[i].args = NULL;
 	if (!commands[i].path)
-		free_struct_and_exit(commands, i, "Malloc failed\n");
+		free_struct_and_exit(commands, i + 1, "Malloc failed\n");
 }
 
 t_path	*initialize_commands_struct(int cmd_count, char **av, char **envp)

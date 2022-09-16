@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parsing.c                                          :+:      :+:    :+:   */
+/*   get_paths.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ilandols <ilyes@student.42.fr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/07 19:11:29 by ilandols          #+#    #+#             */
-/*   Updated: 2022/09/14 14:51:37 by ilandols         ###   ########.fr       */
+/*   Updated: 2022/09/16 19:34:48 by ilandols         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ char	*get_command_path(char *path, char **bin_paths)
 			ft_printf("Malloc failed\n");
 			return (NULL);
 		}
-		if (access(command_path, X_OK) >= 0)
+		if (access(command_path, X_OK) == 0)
 		{
 			free(path);
 			return (command_path);
@@ -78,7 +78,7 @@ void	get_all_paths(t_path *commands, int cmd_count, char **av, char **envp)
 	i = 0;
 	while (i < cmd_count)
 	{
-		if (access(commands[i].path, X_OK) < 0)
+		if (access(commands[i].path, X_OK) == -1)
 			commands[i].path = get_command_path(commands[i].path, bin_paths);
 		if (!commands[i].path)
 		{
