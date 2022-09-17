@@ -9,6 +9,7 @@ SRC = main.c \
 		get_paths.c \
 		pipex.c \
 		free_memory.c \
+		here_doc.c \
 		temp.c
 
 OBJ = $(SRC:.c=.o)

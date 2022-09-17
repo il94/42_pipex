@@ -1,28 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   here_doc.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ilandols <ilyes@student.42.fr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/09/02 17:52:29 by ilandols          #+#    #+#             */
-/*   Updated: 2022/09/17 19:46:26 by ilandols         ###   ########.fr       */
+/*   Created: 2022/09/17 19:57:03 by ilandols          #+#    #+#             */
+/*   Updated: 2022/09/17 19:59:44 by ilandols         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../pipex.h"
 
-int	main(int ac, char **av, char **envp)
+void	generate_here_doc(char **av, t_fds *fd_list)
 {
-	t_path	*commands;
-
-	if (ac < 5)
-		ft_print_exit("Not enough arguments\n");
-	if (!envp[0])
-		ft_print_exit("Env is not registred\n");
-	commands = initialize_commands_struct(ac, av, envp);
-	get_all_paths(commands, av, envp);
-	pipex(commands, av, envp);
-	free_struct(commands, commands->cmd_count);
-	return (0);
+	fd_list->files[0] = open(av[1], O_WRONLY | O_CREAT, 0644);
 }

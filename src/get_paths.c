@@ -6,7 +6,7 @@
 /*   By: ilandols <ilyes@student.42.fr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/07 19:11:29 by ilandols          #+#    #+#             */
-/*   Updated: 2022/09/16 19:34:48 by ilandols         ###   ########.fr       */
+/*   Updated: 2022/09/17 17:44:50 by ilandols         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,23 +67,23 @@ char	**get_bin_paths(char **envp)
 	return (bin_paths);
 }
 
-void	get_all_paths(t_path *commands, int cmd_count, char **av, char **envp)
+void	get_all_paths(t_path *commands, char **av, char **envp)
 {
 	char	**bin_paths;
 	int		i;
 
 	bin_paths = get_bin_paths(envp);
 	if (!bin_paths)
-		free_struct_and_exit(commands, cmd_count, NULL);
+		free_struct_and_exit(commands, commands->cmd_count, NULL);
 	i = 0;
-	while (i < cmd_count)
+	while (i < commands->cmd_count)
 	{
 		if (access(commands[i].path, X_OK) == -1)
 			commands[i].path = get_command_path(commands[i].path, bin_paths);
 		if (!commands[i].path)
 		{
 			ft_free_array(bin_paths);
-			free_struct_and_exit(commands, cmd_count, NULL);
+			free_struct_and_exit(commands, commands->cmd_count, NULL);
 		}
 		i++;
 	}
