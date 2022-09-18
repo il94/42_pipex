@@ -3,3 +3,6 @@
 pipex
 infile
 outfile
+p_infile
+here_doc
+b_infile

@@ -6,7 +6,7 @@
 /*   By: ilandols <ilyes@student.42.fr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/14 16:54:06 by ilandols          #+#    #+#             */
-/*   Updated: 2022/09/17 19:15:51 by ilandols         ###   ########.fr       */
+/*   Updated: 2022/09/18 19:54:53 by ilandols         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,10 @@ int	apply_dups(int new_stdin, int new_stdout)
 
 int	redirect_flows(t_fds *fd_list, int i, int cmd_count)
 {
+	// if (fd_list->files[i] == -1)
+	// {
+	// 		return (0);
+	// }
 	if (i == 0)
 	{
 		if (!apply_dups(fd_list->files[0], fd_list->pipes[i + 1]))
@@ -47,12 +51,20 @@ int	redirect_flows(t_fds *fd_list, int i, int cmd_count)
 
 void	child_process(t_fds *fd_list, t_path *commands, int i, char **envp)
 {
-	if (!redirect_flows(fd_list, i, commands->cmd_count))
-		free_all_and_exit(fd_list, commands, "Dup Failed\n");
-	if (commands[i].args)
-		execve(commands[i].path, commands[i].args, envp);
-	else
-		execve(commands[i].path, &commands[i].path, envp);
+	printf("CHILD\n");
+	// if (fd_list->files[i] == -1)
+	// {
+	// 	free_all_and_exit(fd_list, commands, "TEST\n");
+	// }
+	// else
+	{
+		if (!redirect_flows(fd_list, i, commands->cmd_count))
+			free_all_and_exit(fd_list, commands, "Dup Failed\n");
+		if (commands[i].args)
+			execve(commands[i].path, commands[i].args, envp);
+		else
+			execve(commands[i].path, &commands[i].path, envp);
+	}
 }
 
 void	parent_process(t_fds *fd_list, pid_t pid, int i)
@@ -70,8 +82,8 @@ void	pipex(t_path *commands, char **av, char **envp)
 	if (!initialize_fd(av, &fd_list, commands->cmd_count))
 		free_struct_and_exit(commands, commands->cmd_count, NULL);
 	i = 0;
-	if (fd_list.files[0] == -1)
-		i++;
+	// if (fd_list.files[0] == -1)
+	// 	i++;
 	while (i < commands->cmd_count)
 	{
 		pid = fork();

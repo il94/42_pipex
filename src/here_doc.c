@@ -6,7 +6,7 @@
 /*   By: ilandols <ilyes@student.42.fr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/17 19:57:03 by ilandols          #+#    #+#             */
-/*   Updated: 2022/09/17 19:59:44 by ilandols         ###   ########.fr       */
+/*   Updated: 2022/09/18 16:46:49 by ilandols         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,5 +14,5 @@
 
 void	generate_here_doc(char **av, t_fds *fd_list)
 {
-	fd_list->files[0] = open(av[1], O_WRONLY | O_CREAT, 0644);
+	fd_list->files[0] = 0;
 }

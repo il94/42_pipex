@@ -6,7 +6,7 @@
 /*   By: ilandols <ilyes@student.42.fr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/13 20:15:57 by ilandols          #+#    #+#             */
-/*   Updated: 2022/09/17 19:59:55 by ilandols         ###   ########.fr       */
+/*   Updated: 2022/09/18 19:02:48 by ilandols         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ int	initalize_pipes(t_fds *fd_list, int cmd_count)
 int	initialize_fd(char **av, t_fds *fd_list, int cmd_count)
 {
 	fd_list->pipes = NULL;
-	if (ft_strcmp(av[1], "here_doc\0"))
+	if (!ft_strcmp(av[1], "here_doc\0"))
 		generate_here_doc(av, fd_list);
 	else	
 		fd_list->files[0] = open(av[1], O_RDONLY);
