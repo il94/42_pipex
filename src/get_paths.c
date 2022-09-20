@@ -6,7 +6,7 @@
 /*   By: ilandols <ilyes@student.42.fr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/07 19:11:29 by ilandols          #+#    #+#             */
-/*   Updated: 2022/09/17 17:44:50 by ilandols         ###   ########.fr       */
+/*   Updated: 2022/09/20 20:47:56 by ilandols         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ char	*get_command_path(char *path, char **bin_paths)
 	int		i;
 
 	i = 0;
-	while (bin_paths[i])
+	while (!ft_strchr(path, '/') && bin_paths[i])
 	{
 		command_path = ft_pathjoin(bin_paths[i], path);
 		if (!command_path)
@@ -35,9 +35,7 @@ char	*get_command_path(char *path, char **bin_paths)
 		free(command_path);
 		i++;
 	}
-	free(path);
-	ft_printf("Command not found\n");
-	return (NULL);
+	return (path);
 }
 
 char	**get_bin_paths(char **envp)
@@ -47,22 +45,21 @@ char	**get_bin_paths(char **envp)
 	int		i;
 
 	i = 0;
+	bin_paths = NULL;
 	read_line = NULL;
 	while (envp[i] && !ft_strnstr(envp[i], "PATH", 4))
-	{
 		i++;
-		if (!envp[i])
+	if (!envp[i])
+		ft_printf("Env variable PATH is not registred\n");
+	else
+	{
+		read_line = ft_strnstr(envp[i], "PATH", 4);
+		bin_paths = ft_split(&read_line[5], ':');
+		if (!bin_paths)
 		{
-			ft_printf("Env variable PATH is not registred\n");
+			ft_printf("Malloc failed\n");
 			return (NULL);
 		}
-	}
-	read_line = ft_strnstr(envp[i], "PATH", 4);
-	bin_paths = ft_split(&read_line[5], ':');
-	if (!bin_paths)
-	{
-		ft_printf("Malloc failed\n");
-		return (NULL);
 	}
 	return (bin_paths);
 }
@@ -78,8 +75,7 @@ void	get_all_paths(t_path *commands, char **av, char **envp)
 	i = 0;
 	while (i < commands->cmd_count)
 	{
-		if (access(commands[i].path, X_OK) == -1)
-			commands[i].path = get_command_path(commands[i].path, bin_paths);
+		commands[i].path = get_command_path(commands[i].path, bin_paths);
 		if (!commands[i].path)
 		{
 			ft_free_array(bin_paths);

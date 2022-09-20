@@ -6,7 +6,7 @@
 /*   By: ilandols <ilyes@student.42.fr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/02 17:53:10 by ilandols          #+#    #+#             */
-/*   Updated: 2022/09/17 20:00:34 by ilandols         ###   ########.fr       */
+/*   Updated: 2022/09/19 16:38:28 by ilandols         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,6 @@ void	generate_here_doc(char **av, t_fds *fd_list);
 int		apply_dups(int new_stdin, int new_stdout);
 int		redirect_flows(t_fds *fd_list, int i, int cmd_count);
 void	child_process(t_fds *fd_list, t_path *commands, int i, char **envp);
-void	parent_process(t_fds *fd_list, pid_t pid, int i);
 void	pipex(t_path *commands, char **av, char **envp);
 
 /* get_paths.c */
