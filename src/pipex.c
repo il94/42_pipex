@@ -6,7 +6,7 @@
 /*   By: ilandols <ilyes@student.42.fr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/14 16:54:06 by ilandols          #+#    #+#             */
-/*   Updated: 2022/09/20 20:38:21 by ilandols         ###   ########.fr       */
+/*   Updated: 2022/09/22 00:44:07 by ilandols         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,12 +47,14 @@ int	redirect_flows(t_fds *fd_list, int i, int cmd_count)
 
 void	child_process(t_fds *fd_list, t_path *commands, int i, char **envp)
 {
+	char	*buffer;
+	
+	buffer = NULL;
+	if (access(commands[i].path, X_OK) != 0)
+		free_all_and_exit(fd_list, commands, "Command not found\n");		
 	if (!redirect_flows(fd_list, i, commands->cmd_count))
 		free_all_and_exit(fd_list, commands, "Dup Failed\n");
-	if (commands[i].args)
-		execve(commands[i].path, commands[i].args, envp);
-	else
-		execve(commands[i].path, &commands[i].path, envp);
+	execve(commands[i].path, commands[i].args, envp);
 }
 
 void	pipex(t_path *commands, char **av, char **envp)

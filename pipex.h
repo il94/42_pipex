@@ -6,7 +6,7 @@
 /*   By: ilandols <ilyes@student.42.fr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/02 17:53:10 by ilandols          #+#    #+#             */
-/*   Updated: 2022/09/19 16:38:28 by ilandols         ###   ########.fr       */
+/*   Updated: 2022/09/22 00:45:07 by ilandols         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,13 +29,14 @@ typedef struct s_path
 
 typedef struct s_fds
 {
-	int	files[2];
-	int	*pipes;
+	int		files[2];
+	int		*pipes;
+	char	*limiter;
 
 }	t_fds;
 
 /* here_doc.c */
-void	generate_here_doc(char **av, t_fds *fd_list);
+void	generate_here_doc(char **av, t_fds *fd_list, int cmd_count);
 
 /* pipex.c */
 int		apply_dups(int new_stdin, int new_stdout);
@@ -57,9 +58,8 @@ void	free_struct_and_exit(t_path *commands, int cmd_count, char *str_error);
 /* initialize.c */
 int		initalize_pipes(t_fds *fd_list, int cmd_count);
 int		initialize_fd(char **av, t_fds *fd_list, int cmd_count);
-void	initialize_command_with_args(t_path *commands, int i, char **av);
-void	initialize_command_without_args(t_path *commands, int i, char **av);
-t_path	*initialize_commands_struct(int ac, char **av, char **envp);
+void	initialize_command(t_path *commands, int i, char *av);
+t_path	*initialize_commands_struct(int cmd_count, char **cmd_list);
 
 /* main.c */
 int		main(int ac, char **av, char **envp);

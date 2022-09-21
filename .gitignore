@@ -1,8 +1,7 @@
 *.o
 .vscode
 pipex
-infile
-outfile
 p_infile
-here_doc
+p_outfile
 b_infile
+b_outfile

@@ -6,7 +6,7 @@
 /*   By: ilandols <ilyes@student.42.fr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/02 17:52:29 by ilandols          #+#    #+#             */
-/*   Updated: 2022/09/20 18:57:26 by ilandols         ###   ########.fr       */
+/*   Updated: 2022/09/22 00:45:46 by ilandols         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,10 +18,12 @@ int	main(int ac, char **av, char **envp)
 
 	if (ac < 5)
 		ft_print_exit("Not enough arguments\n");
-	// if (!envp[0])
-	// 	ft_print_exit("Env is not registred\n");
-	commands = initialize_commands_struct(ac, av, envp);
-	get_all_paths(commands, av, envp);
+	if (ft_strcmp(av[1], "here_doc\0") == 0)
+		commands = initialize_commands_struct(ac - 4, av + 3);
+	else
+		commands = initialize_commands_struct(ac - 3, av + 2);
+	if (envp[0])
+		get_all_paths(commands, av, envp);
 	pipex(commands, av, envp);
 	free_struct(commands, commands->cmd_count);
 	return (0);
