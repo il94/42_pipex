@@ -6,7 +6,7 @@
 /*   By: ilandols <ilyes@student.42.fr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/14 16:54:06 by ilandols          #+#    #+#             */
-/*   Updated: 2022/09/22 00:44:07 by ilandols         ###   ########.fr       */
+/*   Updated: 2022/09/22 21:31:37 by ilandols         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,8 @@
 
 int	apply_dups(int new_stdin, int new_stdout)
 {
-	int	fd1;
-	int	fd2;
-
-	fd1 = dup2(new_stdin, 0);
-	fd2 = dup2(new_stdout, 1);
-	if (fd1 == -1 || fd2 == -1)
+	if (dup2(new_stdin, STDIN_FILENO) == -1
+		|| dup2(new_stdout, STDOUT_FILENO) == -1)
 		return (0);
 	return (1);
 }
@@ -27,33 +23,20 @@ int	apply_dups(int new_stdin, int new_stdout)
 int	redirect_flows(t_fds *fd_list, int i, int cmd_count)
 {
 	if (i == 0)
-	{
-		if (!apply_dups(fd_list->files[0], fd_list->pipes[i + 1]))
-			return (0);
-	}
+		return (apply_dups(fd_list->files[0], fd_list->pipes[i + 1]));
 	else if (i == cmd_count - 1)
-	{
-		if (!apply_dups(fd_list->pipes[i * 2 - 2], fd_list->files[1]))
-			return (0);
-	}	
+		return (apply_dups(fd_list->pipes[i * 2 - 2], fd_list->files[1]));
 	else
-	{
-		if (!apply_dups(fd_list->pipes[i * 2 - 2], fd_list->pipes[i * 2 + 1]))
-			return (0);
-	}
-	close(fd_list->pipes[i * 2]);
-	return (1);
+		return (apply_dups(fd_list->pipes[i * 2 - 2], fd_list->pipes[i * 2 + 1]));
 }
 
 void	child_process(t_fds *fd_list, t_path *commands, int i, char **envp)
 {
-	char	*buffer;
-	
-	buffer = NULL;
 	if (access(commands[i].path, X_OK) != 0)
 		free_all_and_exit(fd_list, commands, "Command not found\n");		
 	if (!redirect_flows(fd_list, i, commands->cmd_count))
 		free_all_and_exit(fd_list, commands, "Dup Failed\n");
+	close(fd_list->pipes[i * 2]);
 	execve(commands[i].path, commands[i].args, envp);
 }
 
@@ -63,8 +46,11 @@ void	pipex(t_path *commands, char **av, char **envp)
 	pid_t	pid;
 	t_fds	fd_list;
 
+	// printf("outfile = %s\n", av[commands->cmd_count + 3]);
 	if (!initialize_fd(av, &fd_list, commands->cmd_count))
 		free_struct_and_exit(commands, commands->cmd_count, NULL);
+	// print_struct(commands, 2);
+	print_fd(fd_list, 2);
 	i = 0;
 	while (i < commands->cmd_count)
 	{
@@ -79,4 +65,5 @@ void	pipex(t_path *commands, char **av, char **envp)
 	}
 	waitpid(pid, NULL, 0);
 	free_files(&fd_list, commands->cmd_count);
+	unlink("here_doc");
 }

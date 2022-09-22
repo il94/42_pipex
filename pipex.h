@@ -6,7 +6,7 @@
 /*   By: ilandols <ilyes@student.42.fr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/02 17:53:10 by ilandols          #+#    #+#             */
-/*   Updated: 2022/09/22 00:45:07 by ilandols         ###   ########.fr       */
+/*   Updated: 2022/09/22 18:20:39 by ilandols         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,7 @@ t_path	*initialize_commands_struct(int cmd_count, char **cmd_list);
 int		main(int ac, char **av, char **envp);
 
 /* temp.c */
+void	print_fd(t_fds fd_list, int size);
 void	print_struct(t_path *commands, int size);
 
 #endif
