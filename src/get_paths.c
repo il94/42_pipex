@@ -6,7 +6,7 @@
 /*   By: ilandols <ilyes@student.42.fr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/07 19:11:29 by ilandols          #+#    #+#             */
-/*   Updated: 2022/09/21 18:32:27 by ilandols         ###   ########.fr       */
+/*   Updated: 2022/09/23 18:18:40 by ilandols         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ char	*get_command_path(char *path, char **bin_paths)
 		if (!command_path)
 		{
 			free(path);
-			ft_printf("Malloc failed\n");
+			perror("malloc");
 			return (NULL);
 		}
 		if (access(command_path, X_OK) == 0)
@@ -49,37 +49,35 @@ char	**get_bin_paths(char **envp)
 	read_line = NULL;
 	while (envp[i] && !ft_strnstr(envp[i], "PATH", 4))
 		i++;
-	if (!envp[i])
-		ft_printf("Env variable PATH is not registred\n");
-	else
+	if (envp[i])
 	{
 		read_line = ft_strnstr(envp[i], "PATH", 4);
 		bin_paths = ft_split(&read_line[5], ':');
 		if (!bin_paths)
 		{
-			ft_printf("Malloc failed\n");
+			perror("malloc");
 			return (NULL);
 		}
 	}
 	return (bin_paths);
 }
 
-void	get_all_paths(t_path *commands, char **av, char **envp)
+void	get_all_paths(t_cmds *cmd_list, char **envp)
 {
 	char	**bin_paths;
 	int		i;
 
 	bin_paths = get_bin_paths(envp);
 	if (!bin_paths)
-		free_struct_and_exit(commands, commands->cmd_count, NULL);
+		free_struct_and_exit(cmd_list, cmd_list->cmd_count, NULL);
 	i = 0;
-	while (i < commands->cmd_count)
+	while (i < cmd_list->cmd_count)
 	{
-		commands[i].path = get_command_path(commands[i].path, bin_paths);
-		if (!commands[i].path)
+		cmd_list[i].path = get_command_path(cmd_list[i].path, bin_paths);
+		if (!cmd_list[i].path)
 		{
 			ft_free_array(bin_paths);
-			free_struct_and_exit(commands, commands->cmd_count, NULL);
+			free_struct_and_exit(cmd_list, cmd_list->cmd_count, NULL);
 		}
 		i++;
 	}

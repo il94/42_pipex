@@ -6,35 +6,49 @@
 /*   By: ilandols <ilyes@student.42.fr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/17 19:57:03 by ilandols          #+#    #+#             */
-/*   Updated: 2022/09/22 21:30:56 by ilandols         ###   ########.fr       */
+/*   Updated: 2022/09/23 18:12:32 by ilandols         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../pipex.h"
 
-void	generate_here_doc(char **av, t_fds *fd_list, int cmd_count)
+void	opening_fd_here_doc(t_cmds *cmd_list, t_fds *fd_list, char **av)
+{
+	fd_list->files[0] = open(av[1], O_RDWR | O_EXCL | O_CREAT, 0644);
+	if (fd_list->files[0] == -1)
+		free_struct_and_exit(cmd_list, cmd_list->cmd_count, "open");
+	fd_list->files[1] = open(av[cmd_list->cmd_count + 3],
+			O_WRONLY | O_CREAT | O_APPEND, 0644);
+	if (fd_list->files[1] == -1)
+		free_all_and_exit(fd_list, cmd_list, "open");
+}
+
+void	writing_here_doc(t_cmds *cmd_list, t_fds *fd_list, char **av)
 {
 	char	*buffer;
-	
+
 	buffer = NULL;
 	fd_list->limiter = ft_strdup(av[2]);
 	if (!fd_list->limiter)
-	{
-		ft_printf("Malloc failed\n");
-		return ;	
-	}
-	fd_list->files[0] = open(av[1], O_RDWR | O_CREAT | O_TRUNC);
-	fd_list->files[1] = open(av[cmd_count + 3], O_WRONLY | O_CREAT | O_APPEND, 0644);
-	// printf("outfile = %s\n", av[cmd_count + 3]);
+		free_struct_and_exit(cmd_list, cmd_list->cmd_count, "malloc");
 	while (1)
 	{
 		ft_printf("heredoc> ");
 		buffer = ft_get_next_line(STDIN_FILENO);
+		if (!buffer)
+			free_all_and_exit(fd_list, cmd_list, "malloc");
 		if (!ft_strncmp(fd_list->limiter, buffer, ft_strlen(fd_list->limiter)))
 			break ;
 		write(fd_list->files[0], buffer, ft_strlen(buffer));
 		free(buffer);
 	}
 	free(buffer);
-	free(fd_list->limiter);
+	close(fd_list->files[0]);
+}
+
+void	generate_here_doc(t_cmds *cmd_list, t_fds *fd_list, char **av)
+{
+	fd_list->limiter = NULL;
+	opening_fd_here_doc(cmd_list, fd_list, av);
+	writing_here_doc(cmd_list, fd_list, av);
 }

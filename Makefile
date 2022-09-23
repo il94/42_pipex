@@ -9,8 +9,7 @@ SRC = main.c \
 		get_paths.c \
 		pipex.c \
 		free_memory.c \
-		here_doc.c \
-		temp.c
+		here_doc.c
 
 OBJ = $(SRC:.c=.o)
 
@@ -22,11 +21,11 @@ all : $(NAME)
 $(NAME): $(OBJ)
 	$(MAKE) --no-print-directory -C libft
 	echo "\033[36mMaking Pipex\033[0m"
-	$(CC) $(OBJ) $(LIBFT) -o $(NAME) -g
+	$(CC) $(CFLAGS) $(OBJ) $(LIBFT) -o $(NAME) -g
 	echo "\033[32mDone\033[0m"
 
 %.o : $(SRCPATH)%.c
-	$(CC) -c $^  -g
+	$(CC) $(CFLAGS) -c $^  -g
 
 bonus : all
 

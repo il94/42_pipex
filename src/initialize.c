@@ -6,90 +6,76 @@
 /*   By: ilandols <ilyes@student.42.fr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/13 20:15:57 by ilandols          #+#    #+#             */
-/*   Updated: 2022/09/22 21:30:39 by ilandols         ###   ########.fr       */
+/*   Updated: 2022/09/23 18:18:24 by ilandols         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../pipex.h"
 
-int	initalize_pipes(t_fds *fd_list, int cmd_count)
+void	initalize_pipes(t_cmds *cmd_list, t_fds *fd_list)
 {
 	int	i;
 
-	fd_list->pipes = malloc(cmd_count * 2 * sizeof(int));
+	fd_list->pipes = malloc(cmd_list->cmd_count * 2 * sizeof(int));
 	if (!fd_list->pipes)
-	{
-		perror("malloc");
-		return (0);
-	}
+		free_all_and_exit(fd_list, cmd_list, "malloc");
 	i = 0;
-	while (i < cmd_count && pipe(&fd_list->pipes[i * 2]) == 0)
+	while (i < cmd_list->cmd_count && pipe(&fd_list->pipes[i * 2]) == 0)
 		i++;
-	if (i < cmd_count)
-	{
-		perror("pipe");
-		free_files(fd_list, i);
-		return (0);
-	}
-	return (1);
+	if (i < cmd_list->cmd_count)
+		free_all_and_exit(fd_list, cmd_list, "pipe");
 }
 
-int	initialize_fd(char **av, t_fds *fd_list, int cmd_count)
+void	initialize_fd(t_cmds *cmd_list, t_fds *fd_list, char **av)
 {
 	fd_list->limiter = NULL;
 	fd_list->pipes = NULL;
 	if (ft_strcmp(av[1], "here_doc\0") == 0)
-		generate_here_doc(av, fd_list, cmd_count);
+		generate_here_doc(cmd_list, fd_list, av);
 	else
-	{	
-		fd_list->files[0] = open(av[1], O_RDONLY);
-		fd_list->files[1] = open(av[cmd_count + 2], O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	{
+		fd_list->files[1] = open(av[cmd_list->cmd_count + 2],
+				O_WRONLY | O_CREAT | O_TRUNC, 0644);
+		if (fd_list->files[1] == -1)
+			free_all_and_exit(fd_list, cmd_list, "open");
 	}
+	fd_list->files[0] = open(av[1], O_RDONLY);
 	if (fd_list->files[0] == -1)
 		perror("open");
-	if (fd_list->files[1] == -1)
-	{
-		perror("open");
-		free_files(fd_list, cmd_count);
-		return (0);
-	}
-	if (!initalize_pipes(fd_list, cmd_count))
-		return (0);
-	return (1);
+	initalize_pipes(cmd_list, fd_list);
 }
 
-void	initialize_command(t_path *commands, int i, char *av)
+void	initialize_command(t_cmds *cmd_list, int i, char *av)
 {
 	char	*args_list;
 
 	args_list = ft_strdup(av);
 	if (!args_list)
-		free_struct_and_exit(commands, i, "Malloc failed\n");
-	commands[i].path = ft_strcut_left(av, ' ');
-	commands[i].args = ft_split(args_list, ' ');
-	if (!commands[i].path || !commands[i].args)
+		free_struct_and_exit(cmd_list, i, "malloc");
+	cmd_list[i].path = ft_strcut_left(av, ' ');
+	cmd_list[i].args = ft_split(args_list, ' ');
+	if (!cmd_list[i].path || !cmd_list[i].args)
 	{
 		free(args_list);
-		free_struct_and_exit(commands, i + 1, "Malloc failed\n");
+		free_struct_and_exit(cmd_list, i + 1, "malloc");
 	}
 	free(args_list);
 }
 
-t_path	*initialize_commands_struct(int cmd_count, char **cmd_list)
+t_cmds	*initialize_cmd_list_struct(int cmd_count, char **args)
 {
-	t_path	*commands;
+	t_cmds	*cmd_list;
 	int		i;
-	int		j;
 
-	commands = malloc(cmd_count * sizeof(t_path));
-	if (!commands)
-		ft_print_exit("Malloc failed\n");
-	commands->cmd_count = cmd_count;
+	cmd_list = malloc(cmd_count * sizeof(t_cmds));
+	if (!cmd_list)
+		ft_perror_exit("malloc");
+	cmd_list->cmd_count = cmd_count;
 	i = 0;
 	while (i < cmd_count)
 	{
-		initialize_command(commands, i, cmd_list[i]);
+		initialize_command(cmd_list, i, args[i]);
 		i++;
 	}
-	return (commands);
+	return (cmd_list);
 }
