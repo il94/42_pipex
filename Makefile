@@ -15,7 +15,6 @@ OBJ = $(SRC:.c=.o)
 
 LIBFT = -L libft -lft
 
-
 all : $(NAME)
 
 $(NAME): $(OBJ)

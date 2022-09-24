@@ -6,7 +6,7 @@
 /*   By: ilandols <ilyes@student.42.fr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/14 16:54:06 by ilandols          #+#    #+#             */
-/*   Updated: 2022/09/23 18:18:07 by ilandols         ###   ########.fr       */
+/*   Updated: 2022/09/24 19:26:58 by ilandols         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,16 +14,9 @@
 
 int	dup_fd(int new_stdin, int new_stdout)
 {
-	if (dup2(new_stdin, STDIN_FILENO) == -1)
-	{
-		perror("dup2");
+	if (dup2(new_stdin, STDIN_FILENO) == -1
+		|| dup2(new_stdout, STDOUT_FILENO) == -1)
 		return (0);
-	}
-	if (dup2(new_stdout, STDOUT_FILENO) == -1)
-	{
-		perror("dup2");
-		return (0);
-	}
 	return (1);
 }
 
@@ -43,7 +36,7 @@ void	child_process(t_cmds *cmd_list, t_fds *fd_list, int i, char **envp)
 		free_all_and_exit(fd_list, cmd_list, "access");
 	if (!redirect_flows(fd_list, i, cmd_list->cmd_count))
 		free_all_and_exit(fd_list, cmd_list, NULL);
-	close(fd_list->pipes[i * 2]);
+	free_files(fd_list, cmd_list->cmd_count);
 	execve(cmd_list[i].path, cmd_list[i].args, envp);
 }
 
@@ -60,11 +53,17 @@ void	pipex(t_cmds *cmd_list, t_fds *fd_list, char **envp)
 			free_all_and_exit(fd_list, cmd_list, "fork");
 		else if (pid == 0)
 			child_process(cmd_list, fd_list, i, envp);
-		else
-			close(fd_list->pipes[i * 2 + 1]);
+		else if (i > 0)
+			close(fd_list->pipes[i * 2 - 2]);
+		close(fd_list->pipes[i * 2 + 1]);
 		i++;
 	}
-	waitpid(pid, NULL, 0);
-	if (access("here_doc", F_OK) == 0)
-		unlink("here_doc");
+	i = 0;
+	while (i < cmd_list->cmd_count)
+	{
+		waitpid(-1, NULL, 0);
+		i++;
+	}
+	if (access("/tmp/.heredoc", F_OK) == 0)
+		unlink("/tmp/.heredoc");
 }

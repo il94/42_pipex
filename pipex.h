@@ -6,7 +6,7 @@
 /*   By: ilandols <ilyes@student.42.fr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/02 17:53:10 by ilandols          #+#    #+#             */
-/*   Updated: 2022/09/23 18:21:49 by ilandols         ###   ########.fr       */
+/*   Updated: 2022/09/24 22:31:34 by ilandols         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,7 @@ void	free_struct_and_exit(t_cmds *cmd_list, int cmd_count, char *str_error);
 void	free_all_and_exit(t_fds *fd_list, t_cmds *cmd_list, char *str_error);
 
 /* initialize.c */
+int		is_valid_input(int ac, char **av);
 void	initalize_pipes(t_cmds *cmd_list, t_fds *fd_list);
 void	initialize_fd(t_cmds *cmd_list, t_fds *fd_list, char **av);
 void	initialize_command(t_cmds *cmd_list, int i, char *av);

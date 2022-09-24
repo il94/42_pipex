@@ -6,7 +6,7 @@
 /*   By: ilandols <ilyes@student.42.fr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/17 19:57:03 by ilandols          #+#    #+#             */
-/*   Updated: 2022/09/23 18:12:32 by ilandols         ###   ########.fr       */
+/*   Updated: 2022/09/24 19:20:00 by ilandols         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,19 @@
 
 void	opening_fd_here_doc(t_cmds *cmd_list, t_fds *fd_list, char **av)
 {
-	fd_list->files[0] = open(av[1], O_RDWR | O_EXCL | O_CREAT, 0644);
+	fd_list->files[0] = open("/tmp/.heredoc", O_RDWR | O_EXCL | O_CREAT, 0644);
 	if (fd_list->files[0] == -1)
+	{
+		printf("TEST INPUT\n");
 		free_struct_and_exit(cmd_list, cmd_list->cmd_count, "open");
+	}
 	fd_list->files[1] = open(av[cmd_list->cmd_count + 3],
 			O_WRONLY | O_CREAT | O_APPEND, 0644);
 	if (fd_list->files[1] == -1)
+	{
+		printf("TEST OUTPUT\n");
 		free_all_and_exit(fd_list, cmd_list, "open");
+	}
 }
 
 void	writing_here_doc(t_cmds *cmd_list, t_fds *fd_list, char **av)

@@ -6,7 +6,7 @@
 /*   By: ilandols <ilyes@student.42.fr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/16 16:23:40 by ilandols          #+#    #+#             */
-/*   Updated: 2022/09/23 18:14:40 by ilandols         ###   ########.fr       */
+/*   Updated: 2022/09/24 21:31:16 by ilandols         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ void	free_files(t_fds *fd_list, int cmd_count)
 	if (fd_list->pipes)
 	{
 		i = 0;
-		while (i < cmd_count)
+		while (i < cmd_count * 2)
 		{
 			if (fd_list->pipes[i] > -1)
 				close(fd_list->pipes[i]);
