@@ -6,27 +6,11 @@
 /*   By: ilandols <ilyes@student.42.fr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/13 20:15:57 by ilandols          #+#    #+#             */
-/*   Updated: 2022/09/24 22:31:08 by ilandols         ###   ########.fr       */
+/*   Updated: 2022/10/03 12:41:25 by ilandols         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../pipex.h"
-
-int	is_valid_input(int ac, char **av)
-{
-	int	i;
-
-	i = 0;
-	if ((av[1] && ac < 6 && ft_strcmp(av[1], "here_doc\0") == 0) || ac < 5)
-		return (0);
-	while (i < ac)
-	{
-		if (ft_strlen(av[i]) == 0)
-			return (0);
-		i++;
-	}
-	return (1);
-}
 
 void	initalize_pipes(t_cmds *cmd_list, t_fds *fd_list)
 {
@@ -49,7 +33,6 @@ void	initialize_fd(t_cmds *cmd_list, t_fds *fd_list, char **av)
 {
 	fd_list->files[0] = -1;
 	fd_list->files[1] = -1;
-	fd_list->limiter = NULL;
 	fd_list->pipes = NULL;
 	if (ft_strcmp(av[1], "here_doc\0") == 0)
 	{

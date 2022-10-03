@@ -6,7 +6,7 @@
 /*   By: ilandols <ilyes@student.42.fr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/14 16:54:06 by ilandols          #+#    #+#             */
-/*   Updated: 2022/09/24 19:26:58 by ilandols         ###   ########.fr       */
+/*   Updated: 2022/10/03 12:49:43 by ilandols         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ void	child_process(t_cmds *cmd_list, t_fds *fd_list, int i, char **envp)
 		free_all_and_exit(fd_list, cmd_list, "access");
 	if (!redirect_flows(fd_list, i, cmd_list->cmd_count))
 		free_all_and_exit(fd_list, cmd_list, NULL);
-	free_files(fd_list, cmd_list->cmd_count);
+	free_files(fd_list, cmd_list->cmd_count, 0);
 	execve(cmd_list[i].path, cmd_list[i].args, envp);
 }
 

@@ -6,7 +6,7 @@
 /*   By: ilandols <ilyes@student.42.fr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/02 17:53:10 by ilandols          #+#    #+#             */
-/*   Updated: 2022/09/24 22:31:34 by ilandols         ###   ########.fr       */
+/*   Updated: 2022/10/03 12:41:29 by ilandols         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,6 @@ typedef struct s_fds
 	int		files[2];
 	int		*pipes;
 	char	*here_doc_name;
-	char	*limiter;
 
 }	t_fds;
 
@@ -51,13 +50,12 @@ char	**get_bin_paths(char **envp);
 void	get_all_paths(t_cmds *cmd_list, char **envp);
 
 /* free_memory.c */
-void	free_files(t_fds *fd_list, int cmd_count);
+void	free_files(t_fds *fd_list, int cmd_count, t_bool array);
 void	free_struct(t_cmds *cmd_list, int cmd_count);
 void	free_struct_and_exit(t_cmds *cmd_list, int cmd_count, char *str_error);
 void	free_all_and_exit(t_fds *fd_list, t_cmds *cmd_list, char *str_error);
 
 /* initialize.c */
-int		is_valid_input(int ac, char **av);
 void	initalize_pipes(t_cmds *cmd_list, t_fds *fd_list);
 void	initialize_fd(t_cmds *cmd_list, t_fds *fd_list, char **av);
 void	initialize_command(t_cmds *cmd_list, int i, char *av);

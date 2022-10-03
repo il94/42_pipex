@@ -6,7 +6,7 @@
 /*   By: ilandols <ilyes@student.42.fr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/07 19:11:29 by ilandols          #+#    #+#             */
-/*   Updated: 2022/09/23 18:18:40 by ilandols         ###   ########.fr       */
+/*   Updated: 2022/10/03 12:48:55 by ilandols         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ char	*get_command_path(char *path, char **bin_paths)
 	int		i;
 
 	i = 0;
-	while (!ft_strchr(path, '/') && bin_paths[i])
+	while (!ft_strchr(path, '/') && ft_strlen(path) > 0 && bin_paths[i])
 	{
 		command_path = ft_pathjoin(bin_paths[i], path);
 		if (!command_path)

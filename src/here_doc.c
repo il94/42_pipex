@@ -6,7 +6,7 @@
 /*   By: ilandols <ilyes@student.42.fr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/17 19:57:03 by ilandols          #+#    #+#             */
-/*   Updated: 2022/09/24 19:20:00 by ilandols         ###   ########.fr       */
+/*   Updated: 2022/09/28 20:44:08 by ilandols         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,16 +34,14 @@ void	writing_here_doc(t_cmds *cmd_list, t_fds *fd_list, char **av)
 	char	*buffer;
 
 	buffer = NULL;
-	fd_list->limiter = ft_strdup(av[2]);
-	if (!fd_list->limiter)
-		free_struct_and_exit(cmd_list, cmd_list->cmd_count, "malloc");
 	while (1)
 	{
 		ft_printf("heredoc> ");
 		buffer = ft_get_next_line(STDIN_FILENO);
 		if (!buffer)
 			free_all_and_exit(fd_list, cmd_list, "malloc");
-		if (!ft_strncmp(fd_list->limiter, buffer, ft_strlen(fd_list->limiter)))
+		buffer[ft_strlen(buffer) - 1] = '\0';
+		if (!ft_strcmp(av[2], buffer))
 			break ;
 		write(fd_list->files[0], buffer, ft_strlen(buffer));
 		free(buffer);
@@ -54,7 +52,6 @@ void	writing_here_doc(t_cmds *cmd_list, t_fds *fd_list, char **av)
 
 void	generate_here_doc(t_cmds *cmd_list, t_fds *fd_list, char **av)
 {
-	fd_list->limiter = NULL;
 	opening_fd_here_doc(cmd_list, fd_list, av);
 	writing_here_doc(cmd_list, fd_list, av);
 }

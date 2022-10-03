@@ -6,7 +6,7 @@
 /*   By: ilandols <ilyes@student.42.fr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/02 17:52:29 by ilandols          #+#    #+#             */
-/*   Updated: 2022/09/24 22:31:01 by ilandols         ###   ########.fr       */
+/*   Updated: 2022/10/03 12:37:03 by ilandols         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ int	main(int ac, char **av, char **envp)
 	t_cmds	*cmd_list;
 	t_fds	fd_list;
 
-	if (!is_valid_input(ac, av))
+	if ((av[1] && ac < 6 && ft_strcmp(av[1], "here_doc\0") == 0) || ac < 5)
 		ft_print_exit("Invalid inputs\n");
 	if (ft_strcmp(av[1], "here_doc\0") == 0)
 		cmd_list = initialize_cmd_list_struct(ac - 4, av + 3);
@@ -27,7 +27,7 @@ int	main(int ac, char **av, char **envp)
 		get_all_paths(cmd_list, envp);
 	initialize_fd(cmd_list, &fd_list, av);
 	pipex(cmd_list, &fd_list, envp);
-	free_files(&fd_list, cmd_list->cmd_count);
+	free_files(&fd_list, cmd_list->cmd_count, 1);
 	free_struct(cmd_list, cmd_list->cmd_count);
 	return (0);
 }

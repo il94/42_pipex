@@ -6,18 +6,16 @@
 /*   By: ilandols <ilyes@student.42.fr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/16 16:23:40 by ilandols          #+#    #+#             */
-/*   Updated: 2022/09/24 21:31:16 by ilandols         ###   ########.fr       */
+/*   Updated: 2022/09/26 13:54:44 by ilandols         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../pipex.h"
 
-void	free_files(t_fds *fd_list, int cmd_count)
+void	free_files(t_fds *fd_list, int cmd_count, t_bool array)
 {
 	int	i;
 
-	if (fd_list->limiter)
-		free(fd_list->limiter);
 	if (fd_list->files[0] > -1)
 		close(fd_list->files[0]);
 	if (fd_list->files[1] > -1)
@@ -31,7 +29,8 @@ void	free_files(t_fds *fd_list, int cmd_count)
 				close(fd_list->pipes[i]);
 			i++;
 		}
-		free(fd_list->pipes);
+		if (array)
+			free(fd_list->pipes);
 	}
 }
 
@@ -61,6 +60,6 @@ void	free_struct_and_exit(t_cmds *cmd_list, int cmd_count, char *str_error)
 
 void	free_all_and_exit(t_fds *fd_list, t_cmds *cmd_list, char *str_error)
 {
-	free_files(fd_list, cmd_list->cmd_count);
+	free_files(fd_list, cmd_list->cmd_count, 1);
 	free_struct_and_exit(cmd_list, cmd_list->cmd_count, str_error);
 }
